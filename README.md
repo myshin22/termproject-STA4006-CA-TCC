@@ -343,28 +343,7 @@ If you use this code in your research, please cite:
   year={2021}
 }
 ```
-
----
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- Original CA-TCC implementation: [emadeldeen24/TS-TCC](https://github.com/emadeldeen24/TS-TCC)
-- Video-level few-shot learning extension: This work
-
----
-
-## 📖 Documentation
-
-For more details, see:
-- **[FINAL_RESEARCH_REPORT.md](FINAL_RESEARCH_REPORT.md)** - Complete research paper with methodology and analysis
-- **[VIDEO_LEVEL_EXPERIMENTS.md](VIDEO_LEVEL_EXPERIMENTS.md)** - Technical implementation details
-
 ---
 
 **Last Updated:** November 8, 2025
+
