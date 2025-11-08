@@ -1,0 +1,179 @@
+# ============================================================================
+# CA-TCC Video-Level Few-Shot Learning - .gitignore
+# ============================================================================
+
+# ============================================================================
+# DATA FILES (CRITICAL - DO NOT UPLOAD)
+# ============================================================================
+# Raw data directory
+data/
+Data/
+DATA/
+
+# PyTorch data files
+*.pt
+*.pth
+
+# NumPy data files
+*.npy
+*.npz
+
+# CSV data files (if containing raw sensor data)
+**/merged_dataset*.csv
+**/raw_data*.csv
+
+# ============================================================================
+# EXPERIMENT RESULTS (TOO LARGE FOR GIT)
+# ============================================================================
+# Experiment logs and results
+experiments_logs/
+Experiments_logs/
+EXPERIMENTS_LOGS/
+
+# Model checkpoints
+saved_models/
+checkpoints/
+*.ckpt
+
+# ============================================================================
+# BACKUP DIRECTORIES
+# ============================================================================
+_old_code/
+_old_experiments/
+backup/
+Backup/
+
+# ============================================================================
+# PYTHON
+# ============================================================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# ============================================================================
+# JUPYTER NOTEBOOK
+# ============================================================================
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+*.ipynb
+
+# ============================================================================
+# IDEs
+# ============================================================================
+# PyCharm
+.idea/
+*.iml
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# Spyder
+.spyderproject
+.spyproject
+
+# ============================================================================
+# OS
+# ============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ============================================================================
+# LOGS
+# ============================================================================
+*.log
+logs/
+*.out
+*.err
+
+# ============================================================================
+# TEMPORARY FILES
+# ============================================================================
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# ============================================================================
+# LARGE FILES
+# ============================================================================
+# Excel files (results already in CSV)
+*.xlsx
+*.xls
+
+# Torch files (confusion matrices can be regenerated)
+*_confusion_matrix.torch
+
+# ============================================================================
+# DOCKER (Local environment configuration - not needed for reproduction)
+# ============================================================================
+Dockerfile
+docker-compose.yml
+.dockerignore
+docker-run.sh
+DOCKER.md
+
+# ============================================================================
+# MISC
+# ============================================================================
+# Compiled files
+*.pyc
+
+# Editor backups
+*.bak
+
+# System files
+.directory

@@ -49,9 +49,9 @@ def data_generator(data_path, configs, training_mode):
 
 
     if "_1p" in training_mode:
-        train_dataset = torch.load(os.path.join(data_path, "train_1perc.pt"))
+        train_dataset = torch.load(os.path.join(data_path, "train_1shot.pt"))
     elif "_5p" in training_mode:
-        train_dataset = torch.load(os.path.join(data_path, "train_5perc.pt"))
+        train_dataset = torch.load(os.path.join(data_path, "train_5shot.pt"))
     elif "_10p" in training_mode:
         train_dataset = torch.load(os.path.join(data_path, "train_10perc.pt"))
     elif "_50p" in training_mode:
@@ -63,20 +63,26 @@ def data_generator(data_path, configs, training_mode):
     else:
         train_dataset = torch.load(os.path.join(data_path, "train.pt"))
 
-    valid_dataset = torch.load(os.path.join(data_path, "val.pt"))
+    # Load test dataset
     test_dataset = torch.load(os.path.join(data_path, "test.pt"))
 
     train_dataset = Load_Dataset(train_dataset, configs, training_mode)
-    valid_dataset = Load_Dataset(valid_dataset, configs, training_mode)
     test_dataset = Load_Dataset(test_dataset, configs, training_mode)
+
+    # REMOVED: No validation split - using train/test only
+    # For self-supervised pretraining, we don't need validation
+    # For supervised/fine-tuning, early stopping is not used
+    valid_dataset = None
 
     if train_dataset.__len__() < batch_size:
         batch_size = 16
 
     train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size,
                                                shuffle=True, drop_last=configs.drop_last, num_workers=0)
-    valid_loader = torch.utils.data.DataLoader(dataset=valid_dataset, batch_size=batch_size,
-                                               shuffle=False, drop_last=configs.drop_last, num_workers=0)
+
+    # Valid loader is same as train for compatibility (but won't be used for early stopping)
+    valid_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size,
+                                               shuffle=False, drop_last=False, num_workers=0)
 
     test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size,
                                               shuffle=False, drop_last=False, num_workers=0)

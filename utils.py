@@ -49,7 +49,7 @@ def epoch_time(start_time, end_time):
     return elapsed_mins, elapsed_secs
 
 
-def _calc_metrics(pred_labels, true_labels, log_dir, home_path):
+def _calc_metrics(pred_labels, true_labels, log_dir, home_path, video_ids=None):
     pred_labels = np.array(pred_labels).astype(int)
     true_labels = np.array(true_labels).astype(int)
 
@@ -58,7 +58,10 @@ def _calc_metrics(pred_labels, true_labels, log_dir, home_path):
     os.makedirs(labels_save_path, exist_ok=True)
     np.save(os.path.join(labels_save_path, "predicted_labels.npy"), pred_labels)
     np.save(os.path.join(labels_save_path, "true_labels.npy"), true_labels)
+    if video_ids is not None:
+        np.save(os.path.join(labels_save_path, "video_ids.npy"), np.array(video_ids))
 
+    # Window-level metrics
     r = classification_report(true_labels, pred_labels, digits=6, output_dict=True)
     cm = confusion_matrix(true_labels, pred_labels)
     df = pd.DataFrame(r)
@@ -66,17 +69,79 @@ def _calc_metrics(pred_labels, true_labels, log_dir, home_path):
     df["accuracy"] = accuracy_score(true_labels, pred_labels)
     df = df * 100
 
-    # save classification report
+    # save window-level classification report (CSV only for easier parsing)
     exp_name = os.path.split(os.path.dirname(log_dir))[-1]
     training_mode = os.path.basename(log_dir)
-    file_name = f"{exp_name}_{training_mode}_classification_report.xlsx"
-    report_Save_path = os.path.join(home_path, log_dir, file_name)
-    df.to_excel(report_Save_path)
+
+    # Save as CSV only (Excel removed to save space)
+    csv_file_name = f"{exp_name}_{training_mode}_classification_report.csv"
+    csv_save_path = os.path.join(home_path, log_dir, csv_file_name)
+    df.to_csv(csv_save_path)
 
     # save confusion matrix
     cm_file_name = f"{exp_name}_{training_mode}_confusion_matrix.torch"
     cm_Save_path = os.path.join(home_path, log_dir, cm_file_name)
     torch.save(cm, cm_Save_path)
+
+    # Trial-level metrics (if video_ids provided)
+    if video_ids is not None:
+        trial_pred, trial_true = _aggregate_to_trial_level(pred_labels, true_labels, video_ids)
+
+        # Calculate trial-level metrics
+        trial_r = classification_report(trial_true, trial_pred, digits=6, output_dict=True)
+        trial_cm = confusion_matrix(trial_true, trial_pred)
+        trial_df = pd.DataFrame(trial_r)
+        trial_df["cohen"] = cohen_kappa_score(trial_true, trial_pred)
+        trial_df["accuracy"] = accuracy_score(trial_true, trial_pred)
+        trial_df = trial_df * 100
+
+        # Save trial-level results (CSV only for easier parsing)
+        trial_csv_name = f"{exp_name}_{training_mode}_TRIAL_classification_report.csv"
+        trial_csv_path = os.path.join(home_path, log_dir, trial_csv_name)
+        trial_df.to_csv(trial_csv_path)
+
+        trial_cm_name = f"{exp_name}_{training_mode}_TRIAL_confusion_matrix.torch"
+        trial_cm_path = os.path.join(home_path, log_dir, trial_cm_name)
+        torch.save(trial_cm, trial_cm_path)
+
+
+def _aggregate_to_trial_level(pred_labels, true_labels, video_ids):
+    """
+    Aggregate window-level predictions to trial-level using majority voting.
+
+    Args:
+        pred_labels: Window-level predictions [N]
+        true_labels: Window-level true labels [N]
+        video_ids: Video ID for each window [N]
+
+    Returns:
+        trial_pred, trial_true: Trial-level predictions and labels
+    """
+    from collections import Counter
+
+    unique_videos = np.unique(video_ids)
+
+    trial_preds = []
+    trial_trues = []
+
+    for video_id in unique_videos:
+        # Get all windows for this video
+        mask = video_ids == video_id
+
+        video_preds = pred_labels[mask]
+        video_trues = true_labels[mask]
+
+        # Majority voting for prediction
+        vote_counts = Counter(video_preds)
+        trial_pred = vote_counts.most_common(1)[0][0]
+
+        # True label should be consistent across all windows
+        trial_true = Counter(video_trues).most_common(1)[0][0]
+
+        trial_preds.append(trial_pred)
+        trial_trues.append(trial_true)
+
+    return np.array(trial_preds), np.array(trial_trues)
 
 
 def _logger(logger_name, level=logging.DEBUG):
@@ -94,7 +159,7 @@ def _logger(logger_name, level=logging.DEBUG):
     console_handler.setFormatter(log_format)
     logger.addHandler(console_handler)
     # Creating and adding the file handler
-    file_handler = logging.FileHandler(logger_name, mode='a')
+    file_handler = logging.FileHandler(logger_name, mode='w')
     file_handler.setFormatter(log_format)
     logger.addHandler(file_handler)
     return logger
