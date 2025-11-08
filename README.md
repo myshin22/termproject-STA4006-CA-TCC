@@ -201,11 +201,6 @@ CA-TCC/
 │   ├── run_experiments_video.sh           # Automated experiments
 │   └── compare_results_video.py           # Results analysis
 │
-├── 📚 Documentation
-│   ├── README.md                          # This file
-│   ├── FINAL_RESEARCH_REPORT.md          # Complete research report
-│   └── VIDEO_LEVEL_EXPERIMENTS.md        # Technical docs
-│
 ├── 🗂️ Source Code
 │   ├── models/
 │   │   ├── model.py                       # CNN encoder
@@ -237,7 +232,7 @@ CA-TCC/
 
 - **Exercises**: 10 resistance exercises (Bench Press, Deadlift, OHP, etc.)
 - **Subjects**: 13 participants
-- **Sensors**: Bilateral wrist-worn IMU (12 channels total)
+- **Sensors**: Bilateral arm-worn IMU (12 channels total)
 - **Sampling rate**: 66 Hz
 - **Window size**: 5 seconds (330 frames) with 2-second stride
 
@@ -346,4 +341,5 @@ If you use this code in your research, please cite:
 ---
 
 **Last Updated:** November 8, 2025
+
 
