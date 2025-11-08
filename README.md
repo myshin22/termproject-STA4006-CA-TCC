@@ -6,7 +6,7 @@
 
 **Self-Supervised Contrastive Learning for Few-Shot Exercise Type Classification using Wearable IMU Sensors**
 
-This repository implements video-level few-shot learning using CA-TCC (Contrastive learning with Augmentation and Temporal Coherence) for exercise recognition with limited labeled data.
+This repository implements video-level few-shot learning using CA-TCC (Contrastive learning with Augmentation and Temporal Coherence) for exercise type classification with limited labeled data.
 
 ---
 
@@ -329,6 +329,7 @@ If you use this code in your research, please cite:
 ---
 
 **Last Updated:** November 8, 2025
+
 
 
 
