@@ -285,8 +285,8 @@ Linear Classifier(5504 → 10 classes)
 
 | Comparison | p-value | Significance |
 |------------|---------|--------------|
-| CA-TCC 5-shot vs. Baseline 5-shot | 0.0002 | *** (Highly significant) |
-| CA-TCC 1-shot vs. Baseline 1-shot | 0.491 | ns (Not significant) |
+| CA-TCC 5-shot vs. Baseline 5-shot | 0.0002 | Highly significant |
+| CA-TCC 1-shot vs. Baseline 1-shot | 0.491 | Not significant |
 
 ### Window vs. Video-Level Accuracy
 
@@ -329,6 +329,7 @@ If you use this code in your research, please cite:
 ---
 
 **Last Updated:** November 8, 2025
+
 
 
 
