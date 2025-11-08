@@ -82,18 +82,6 @@ Traditional supervised learning requires large amounts of labeled data, which is
 2. **Fine-tuning** with minimal labeled data (5 videos per exercise class)
 3. **Video-level evaluation** using majority voting for robust predictions
 
-### Why "Video-Level"?
-
-Unlike traditional percentage-based few-shot learning (e.g., "1% of windows"), we use:
-
-- **1-shot** = 1 complete exercise video per class (10 videos total)
-- **5-shot** = 5 videos per class from different subjects (50 videos)
-
-This ensures:
-- ✅ Balanced representation across all exercise types
-- ✅ No data leakage (windows from same video stay together)
-- ✅ Clear semantic meaning ("N labeled trials per exercise")
-
 ---
 
 ## ✨ Features
@@ -341,5 +329,6 @@ If you use this code in your research, please cite:
 ---
 
 **Last Updated:** November 8, 2025
+
 
 
