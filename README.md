@@ -1,10 +1,10 @@
-# CA-TCC: Video-Level Few-Shot Learning for Exercise Recognition
+# CA-TCC: Video-Level Few-Shot Learning for Exercise Type Classifcation
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-1.10+-ee4c2c.svg)](https://pytorch.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-**Self-Supervised Contrastive Learning for Few-Shot Exercise Recognition using Wearable IMU Sensors**
+**Self-Supervised Contrastive Learning for Few-Shot Exercise Type Classification using Wearable IMU Sensors**
 
 This repository implements video-level few-shot learning using CA-TCC (Contrastive learning with Augmentation and Temporal Coherence) for exercise recognition with limited labeled data.
 
@@ -329,6 +329,7 @@ If you use this code in your research, please cite:
 ---
 
 **Last Updated:** November 8, 2025
+
 
 
 
