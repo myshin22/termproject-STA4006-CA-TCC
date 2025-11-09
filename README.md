@@ -1,12 +1,13 @@
-# CA-TCC: Video-Level Few-Shot Learning for Exercise Type Classifcation
+# CA-TCC: Video-Level Fine-Tuning for Exercise Type Classifcation
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-1.10+-ee4c2c.svg)](https://pytorch.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-**Self-Supervised Contrastive Learning for Few-Shot Exercise Type Classification using Wearable IMU Sensors**
+**Self-Supervised Contrastive Learning for Exercise Type Classification with Limited Labeled Data**
 
-This repository implements video-level few-shot learning using CA-TCC (Contrastive learning with Augmentation and Temporal Coherence) for exercise type classification with limited labeled data.
+This repository implements CA-TCC (Contrastive learning with Augmentation and Temporal Coherence) for learning robust video-level representations from wearable IMU sensor data.
+After self-supervised pretraining, the model is fine-tuned with a small number of labeled samples for exercise type classification.
 
 ---
 
@@ -21,7 +22,7 @@ This repository implements video-level few-shot learning using CA-TCC (Contrasti
 
 ### Key Findings
 
-1. **5-shot CA-TCC achieves best few-shot performance:**
+1. **5-shot CA-TCC achieves best finetuning performance:**
    - 88.96% accuracy vs. 75.68% baseline
    - **+13.28 percentage points** absolute improvement
    - **+17.5% relative improvement**
@@ -76,7 +77,7 @@ Traditional supervised learning requires large amounts of labeled data, which is
 
 ### Solution
 
-**Video-Level Few-Shot Learning with Self-Supervised Pretraining:**
+**Video-Level Fine Tuning with Self-Supervised Pretraining:**
 
 1. **Self-supervised pretraining** on all unlabeled data (373 videos)
 2. **Fine-tuning** with minimal labeled data (5 videos per exercise class)
@@ -91,9 +92,9 @@ Traditional supervised learning requires large amounts of labeled data, which is
 - **Predictive Coding**: Predict future timesteps from past context
 - **Data Augmentations**: Jitter, scaling, time masking
 
-### 📊 Video-Level Few-Shot Learning
+### 📊 Video-Level Few-Label Fine Tuning
 - **Balanced sampling** across exercise classes
-- **Subject diversity**: 5-shot samples from different subjects
+- **Subject diversity**: 5 samples from different subjects
 - **Majority voting**: Aggregate window predictions to video-level
 
 ### 📈 Comprehensive Evaluation
@@ -167,9 +168,9 @@ bash run_experiments_video.sh ExerciseIMU 0 4
 ```
 
 This runs all experiments (5 seeds × 6 methods = 30 runs):
-- Baseline 1-shot, 5-shot, 100%
+- Baseline 1-sample, 5-samples, 100%
 - CA-TCC self-supervised pretraining
-- CA-TCC fine-tuning 1-shot, 5-shot
+- CA-TCC fine-tuning 1-sample, 5-samples
 
 ### Step 3: Analyze Results
 
@@ -329,6 +330,7 @@ If you use this code in your research, please cite:
 ---
 
 **Last Updated:** November 8, 2025
+
 
 
 
