@@ -23,8 +23,6 @@ After self-supervised pretraining, the model is fine-tuned with a small number o
 | **Improvement** | — | +3.73% (+8.5%) | +2.83% (+4.1%) | — |
 
 ### Key Findings
-
-<<<<<<< HEAD
 1. **0-shot evaluation reveals poor transfer without fine-tuning:**
    - Only 12.20% accuracy with pretrained model (random: 10%)
    - Self-supervised pretraining alone is insufficient for this task
@@ -35,7 +33,6 @@ After self-supervised pretraining, the model is fine-tuned with a small number o
    - **+13.28 percentage points** absolute improvement
    - **+17.5% relative improvement**
    - Highly statistically significant (p<0.001)
->>>>>>> 23accd6a3b0574b923bda1c51f5edb99f4cecec4
 
 2. **Modest improvements with few-shot learning:**
    - **5-shot**: CA-TCC achieves 71.43% vs. 68.61% baseline (+2.83pp, +4.1% relative)
@@ -459,5 +456,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **Last Updated:** November 14, 2025
+
 
 
