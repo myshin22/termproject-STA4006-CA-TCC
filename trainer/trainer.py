@@ -11,7 +11,7 @@ import torch.nn.functional as F
 from models.loss import NTXentLoss, SupConLoss
 
 
-def Trainer(model, temporal_contr_model, model_optimizer, temp_cont_optimizer, train_dl, valid_dl, test_dl, device,
+def Trainer(model, temporal_contr_model, model_optimizer, temp_cont_optimizer, train_dl, val_dl, test_dl, device,
             logger, config, experiment_log_dir, training_mode):
     # Start training
     logger.debug("Training started ....")
@@ -20,16 +20,20 @@ def Trainer(model, temporal_contr_model, model_optimizer, temp_cont_optimizer, t
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(model_optimizer, 'min')
 
     for epoch in range(1, config.num_epoch + 1):
-        # Train and validate
+        # Train
         train_loss, train_acc = model_train(model, temporal_contr_model, model_optimizer, temp_cont_optimizer,
                                             criterion, train_dl, config, device, training_mode)
-        valid_loss, valid_acc, _, _ = model_evaluate(model, temporal_contr_model, valid_dl, device, training_mode)
+
+        # Validate on validation set
+        val_loss, val_acc, _, _ = model_evaluate(model, temporal_contr_model, val_dl, device, training_mode)
+
+        # Use val_loss for scheduler
         if (training_mode != "self_supervised") and (training_mode != "SupCon"):
-            scheduler.step(valid_loss)
+            scheduler.step(val_loss)
 
         logger.debug(f'\nEpoch : {epoch}\n'
-                     f'Train Loss     : {train_loss:2.4f}\t | \tTrain Accuracy     : {train_acc:2.4f}\n'
-                     f'Valid Loss     : {valid_loss:2.4f}\t | \tValid Accuracy     : {valid_acc:2.4f}')
+                     f'Train Loss     : {train_loss:.4f}\t | \tTrain Accuracy     : {train_acc:.4f}\n'
+                     f'Val Loss       : {val_loss:.4f}\t | \tVal Accuracy       : {val_acc:.4f}')
 
 
     # save the model after training ...

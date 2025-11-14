@@ -69,22 +69,13 @@ def data_generator(data_path, configs, training_mode):
     train_dataset = Load_Dataset(train_dataset, configs, training_mode)
     test_dataset = Load_Dataset(test_dataset, configs, training_mode)
 
-    # REMOVED: No validation split - using train/test only
-    # For self-supervised pretraining, we don't need validation
-    # For supervised/fine-tuning, early stopping is not used
-    valid_dataset = None
-
     if train_dataset.__len__() < batch_size:
         batch_size = 16
 
     train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size,
                                                shuffle=True, drop_last=configs.drop_last, num_workers=0)
 
-    # Valid loader is same as train for compatibility (but won't be used for early stopping)
-    valid_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size,
-                                               shuffle=False, drop_last=False, num_workers=0)
-
     test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size,
                                               shuffle=False, drop_last=False, num_workers=0)
 
-    return train_loader, valid_loader, test_loader
+    return train_loader, test_loader

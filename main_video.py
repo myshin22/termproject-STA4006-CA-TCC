@@ -1,5 +1,5 @@
 """
-NEW main_video.py - Enhanced version with video-level statistics reporting
+main_video.py - Enhanced version with video-level statistics reporting
 
 This is a NEW file. The original main.py remains unchanged.
 
@@ -35,7 +35,7 @@ parser.add_argument('--experiment_description',     default='HAR_experiments',  
 parser.add_argument('--run_description',            default='test1',            type=str,   help='Experiment Description')
 parser.add_argument('--seed',                       default=0,                  type=int,   help='seed value')
 parser.add_argument('--training_mode',              default='self_supervised',  type=str,
-                    help='Modes of choice: random_init, supervised, self_supervised, SupCon, ft_1shot, ft_5shot, gen_pseudo_labels')
+                    help='Modes of choice: random_init, supervised, supervised_1shot, supervised_5shot, self_supervised, 0shot, SupCon, ft_1shot, ft_5shot, gen_pseudo_labels')
 
 parser.add_argument('--selected_dataset',           default='HAR',              type=str,   help='Dataset of choice: EEG, HAR, Epilepsy, pFD, ExerciseIMU')
 parser.add_argument('--data_path',                  default=r'data/',           type=str,   help='Path containing dataset')
@@ -87,7 +87,7 @@ logger.debug("=" * 45)
 # Load datasets
 # CHANGED: Pass logger to data_generator for enhanced reporting
 data_path = os.path.join(args.data_path, data_type)
-train_dl, valid_dl, test_dl = data_generator(data_path, configs, training_mode, logger=logger)
+train_dl, val_dl, test_dl = data_generator(data_path, configs, training_mode, logger=logger)
 logger.debug("Data loaded ...")
 
 # Load Model
@@ -124,6 +124,38 @@ if training_mode == "gen_pseudo_labels":
     pretrained_dict = chkpoint["model_state_dict"]
     model.load_state_dict(pretrained_dict)
     gen_pseudo_labels(model, train_dl, device, data_path)
+    sys.exit(0)
+
+if training_mode == "eval_pretrained" or training_mode == "0shot":
+    # 0-shot: Load pretrained model and evaluate directly (NO fine-tuning)
+    load_from = os.path.join(
+        os.path.join(logs_save_dir, experiment_description, run_description, f"self_supervised_seed_{SEED}",
+                     "saved_models"))
+    chkpoint = torch.load(os.path.join(load_from, "ckp_last.pt"), map_location=device)
+    pretrained_dict = chkpoint["model_state_dict"]
+    model_dict = model.state_dict()
+
+    # Filter out unnecessary keys
+    pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
+
+    # For 0-shot, we keep the logits layer from pretraining
+    model_dict.update(pretrained_dict)
+    model.load_state_dict(model_dict)
+
+    # Evaluate on test set directly
+    logger.debug("0-shot evaluation: Using pretrained weights without fine-tuning")
+    outs = model_evaluate(model, temporal_contr_model, test_dl, device, "supervised")
+    total_loss, total_acc, pred_labels, true_labels = outs
+
+    # Load video_ids for trial-level aggregation
+    test_data_file = os.path.join(data_path, "test.pt")
+    test_data = torch.load(test_data_file)
+    video_ids = test_data.get('video_ids', None)
+    if video_ids is not None:
+        video_ids = video_ids.numpy()
+
+    _calc_metrics(pred_labels, true_labels, experiment_log_dir, args.home_path, video_ids=video_ids)
+    logger.debug(f"Training time is : {datetime.now() - start_time}")
     sys.exit(0)
 
 if "train_linear" in training_mode or "tl" in training_mode:
@@ -186,7 +218,7 @@ if training_mode == "self_supervised" or training_mode == "SupCon":  # to do it 
     copy_Files(os.path.join(logs_save_dir, experiment_description, run_description), data_type)
 
 # Trainer
-Trainer(model, temporal_contr_model, model_optimizer, temporal_contr_optimizer, train_dl, valid_dl, test_dl, device,
+Trainer(model, temporal_contr_model, model_optimizer, temporal_contr_optimizer, train_dl, val_dl, test_dl, device,
         logger, configs, experiment_log_dir, training_mode)
 
 if training_mode != "self_supervised" and training_mode != "SupCon" and training_mode != "SupCon_pseudo":

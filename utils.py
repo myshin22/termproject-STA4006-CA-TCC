@@ -171,7 +171,8 @@ from shutil import copy
 def copy_Files(destination, data_type):
     destination_dir = os.path.join(destination, "model_files")
     os.makedirs(destination_dir, exist_ok=True)
-    copy("main.py", os.path.join(destination_dir, "main.py"))
+    # Use main_video.py (the enhanced version with video-level support)
+    copy("main_video.py", os.path.join(destination_dir, "main.py"))
     # copy("args.py", os.path.join(destination_dir, "args.py"))
     copy("trainer/trainer.py", os.path.join(destination_dir, "trainer.py"))
     copy(f"config_files/{data_type}_Configs.py", os.path.join(destination_dir, f"{data_type}_Configs.py"))

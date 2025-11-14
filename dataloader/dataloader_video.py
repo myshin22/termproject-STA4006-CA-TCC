@@ -108,17 +108,23 @@ def data_generator(data_path, configs, training_mode, logger=None):
         logger: Optional logger for output
 
     Returns:
-        train_loader, valid_loader, test_loader
+        train_loader, test_loader
     """
     batch_size = configs.batch_size
 
     # Load appropriate training dataset based on mode
-    if "_1shot" in training_mode or "_1p" in training_mode:
+    if "_1shot" in training_mode or "_1p" in training_mode or training_mode == "supervised_1shot":
         train_dataset = torch.load(os.path.join(data_path, "train_1shot.pt"))
-        dataset_type = "1-shot (video-level)"
-    elif "_5shot" in training_mode or "_5p" in training_mode:
+        if training_mode == "supervised_1shot":
+            dataset_type = "1-shot (supervised baseline, no pretraining)"
+        else:
+            dataset_type = "1-shot (video-level)"
+    elif "_5shot" in training_mode or "_5p" in training_mode or training_mode == "supervised_5shot":
         train_dataset = torch.load(os.path.join(data_path, "train_5shot.pt"))
-        dataset_type = "5-shot (video-level)"
+        if training_mode == "supervised_5shot":
+            dataset_type = "5-shot (supervised baseline, no pretraining)"
+        else:
+            dataset_type = "5-shot (video-level)"
     elif "_10p" in training_mode:
         train_dataset = torch.load(os.path.join(data_path, "train_10perc.pt"))
         dataset_type = "10% (percentage-based)"
@@ -131,19 +137,20 @@ def data_generator(data_path, configs, training_mode, logger=None):
     elif training_mode == "SupCon":
         train_dataset = torch.load(os.path.join(data_path, "pseudo_train_data.pt"))
         dataset_type = "Pseudo-labeled"
+    elif training_mode == "self_supervised":
+        # Use pretrain.pt (train+val) for self-supervised pretraining (NO test!)
+        train_dataset = torch.load(os.path.join(data_path, "pretrain.pt"))
+        dataset_type = "Pretrain set (train+val, NO test!)"
+    elif training_mode == "0shot" or training_mode == "eval_pretrained":
+        # For 0-shot, we don't actually need train data, but load it anyway for consistency
+        train_dataset = torch.load(os.path.join(data_path, "train.pt"))
+        dataset_type = "0-shot (evaluate pretrained model, NO training)"
     else:
         train_dataset = torch.load(os.path.join(data_path, "train.pt"))
         dataset_type = "Full training set"
 
-    # Load validation dataset (if exists, otherwise use test)
-    val_path = os.path.join(data_path, "val.pt")
-    if os.path.exists(val_path):
-        valid_dataset_raw = torch.load(val_path)
-    else:
-        # Use test as validation if val doesn't exist
-        valid_dataset_raw = torch.load(os.path.join(data_path, "test.pt"))
-
-    # Load test dataset
+    # Load validation and test datasets
+    val_dataset = torch.load(os.path.join(data_path, "val.pt"))
     test_dataset = torch.load(os.path.join(data_path, "test.pt"))
 
     # Print statistics
@@ -151,7 +158,7 @@ def data_generator(data_path, configs, training_mode, logger=None):
     print(f"DATASET STATISTICS - {dataset_type}")
     print("="*70)
     print_video_statistics(train_dataset, "TRAIN")
-    print_video_statistics(valid_dataset_raw, "VALIDATION")
+    print_video_statistics(val_dataset, "VAL")
     print_video_statistics(test_dataset, "TEST")
     print("="*70 + "\n")
 
@@ -163,9 +170,6 @@ def data_generator(data_path, configs, training_mode, logger=None):
         if 'video_ids' in train_dataset:
             train_videos = len(np.unique(train_dataset['video_ids'].numpy()))
             logger.debug(f"  TRAIN: {len(train_dataset['labels'])} windows, {train_videos} videos")
-        if 'video_ids' in valid_dataset_raw:
-            val_videos = len(np.unique(valid_dataset_raw['video_ids'].numpy()))
-            logger.debug(f"  VALIDATION: {len(valid_dataset_raw['labels'])} windows, {val_videos} videos")
         if 'video_ids' in test_dataset:
             test_videos = len(np.unique(test_dataset['video_ids'].numpy()))
             logger.debug(f"  TEST: {len(test_dataset['labels'])} windows, {test_videos} videos")
@@ -173,7 +177,7 @@ def data_generator(data_path, configs, training_mode, logger=None):
 
     # Create Dataset objects
     train_dataset = Load_Dataset(train_dataset, configs, training_mode)
-    valid_dataset = Load_Dataset(valid_dataset_raw, configs, training_mode)
+    val_dataset = Load_Dataset(val_dataset, configs, training_mode)
     test_dataset = Load_Dataset(test_dataset, configs, training_mode)
 
     # Adjust batch size if needed
@@ -184,10 +188,10 @@ def data_generator(data_path, configs, training_mode, logger=None):
     train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size,
                                                shuffle=True, drop_last=configs.drop_last, num_workers=0)
 
-    valid_loader = torch.utils.data.DataLoader(dataset=valid_dataset, batch_size=batch_size,
-                                               shuffle=False, drop_last=False, num_workers=0)
+    val_loader = torch.utils.data.DataLoader(dataset=val_dataset, batch_size=batch_size,
+                                             shuffle=False, drop_last=False, num_workers=0)
 
     test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size,
                                               shuffle=False, drop_last=False, num_workers=0)
 
-    return train_loader, valid_loader, test_loader
+    return train_loader, val_loader, test_loader
