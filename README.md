@@ -2,7 +2,6 @@
 # CA-TCC: Few-Shot Learning for Exercise Recognition
 =======
 # CA-TCC: Video-Level Fine-Tuning for Exercise Type Classifcation
->>>>>>> 23accd6a3b0574b923bda1c51f5edb99f4cecec4
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-1.10+-ee4c2c.svg)](https://pytorch.org/)
@@ -462,3 +461,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **Last Updated:** November 14, 2025
+
