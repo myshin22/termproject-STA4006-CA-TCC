@@ -365,8 +365,6 @@ CA-TCC/
    - Add Gaussian noise ~ Normal(μ=0.0, σ=0.8)
    - Simulates sensor measurement noise
 
-**Reference**: [Data Augmentation for Time Series Classification (2017)](https://arxiv.org/pdf/1706.00527.pdf)
-
 ---
 
 ## 📈 Results
@@ -456,6 +454,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **Last Updated:** November 14, 2025
+
 
 
 
