@@ -1,12 +1,17 @@
+<<<<<<< HEAD
 # CA-TCC: Few-Shot Learning for Exercise Recognition
+=======
+# CA-TCC: Video-Level Fine-Tuning for Exercise Type Classifcation
+>>>>>>> 23accd6a3b0574b923bda1c51f5edb99f4cecec4
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-1.10+-ee4c2c.svg)](https://pytorch.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-**Self-Supervised Contrastive Learning for Few-Shot Exercise Recognition using Wearable IMU Sensors**
+**Self-Supervised Contrastive Learning for Exercise Type Classification with Limited Labeled Data**
 
-This repository implements video-level few-shot learning using CA-TCC (Contrastive learning with Augmentation and Temporal Coherence) for exercise recognition with limited labeled data.
+This repository implements CA-TCC (Contrastive learning with Augmentation and Temporal Coherence) for learning robust video-level representations from wearable IMU sensor data.
+After self-supervised pretraining, the model is fine-tuned with a small number of labeled samples for exercise type classification.
 
 ---
 
@@ -22,10 +27,18 @@ This repository implements video-level few-shot learning using CA-TCC (Contrasti
 
 ### Key Findings
 
+<<<<<<< HEAD
 1. **0-shot evaluation reveals poor transfer without fine-tuning:**
    - Only 12.20% accuracy with pretrained model (random: 10%)
    - Self-supervised pretraining alone is insufficient for this task
    - Fine-tuning with labeled data is essential
+=======
+1. **5-shot CA-TCC achieves best finetuning performance:**
+   - 88.96% accuracy vs. 75.68% baseline
+   - **+13.28 percentage points** absolute improvement
+   - **+17.5% relative improvement**
+   - Highly statistically significant (p<0.001)
+>>>>>>> 23accd6a3b0574b923bda1c51f5edb99f4cecec4
 
 2. **Modest improvements with few-shot learning:**
    - **5-shot**: CA-TCC achieves 71.43% vs. 68.61% baseline (+2.83pp, +4.1% relative)
